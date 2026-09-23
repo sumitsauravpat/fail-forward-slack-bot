@@ -11,3 +11,22 @@ generator client {
 datasource db {
   provider = "postgresql"
 }
+
+model Run {
+  id        Int      @id @default(autoincrement())
+  project   String
+  createdAt DateTime @default(now())
+
+  testResults TestResult[]
+}
+
+model TestResult {
+  id           Int     @id @default(autoincrement())
+  runId        Int
+  filePath     String
+  title        String
+  status       String
+  errorMessage String?
+
+  run Run @relation(fields: [runId], references: [id])
+}
