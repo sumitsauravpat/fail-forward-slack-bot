@@ -11,5 +11,10 @@ export function parseCompareCommand(text: string) {
   const oldRunId = Number(parts[compareIndex + 1]);
   const newRunId = Number(parts[compareIndex + 2]);
 
+  // Purpose — catch non-numeric run IDs here with a clean message, instead of letting NaN reach Postgres and throw a raw Prisma error
+  if (Number.isNaN(oldRunId) || Number.isNaN(newRunId)) {
+    throw new Error("Both run IDs must be numbers, e.g.: compare 12 15");
+  }
+
   return { oldRunId, newRunId };
 }
