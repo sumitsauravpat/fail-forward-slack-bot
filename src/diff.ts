@@ -1,5 +1,6 @@
 import { TestResult } from "./types";
 import { buildFingerprint } from "./fingerprint";
+import { findRenamedTests } from "./rename";
 
 // Purpose — the core comparison engine: matches two runs' failures by fingerprint to find what's new, what changed, and what's now passing
 export function diffResults(
@@ -38,5 +39,27 @@ export function diffResults(
         (entry) => buildFingerprint(item) === buildFingerprint(entry),
       ),
   );
-  return { newFailureList, changedReasonList, newlyPassingList };
+
+  // Purpose — a rename looks like a fake new failure + a fake newly-passing test unless we catch and strip out the matched pairs below
+  const renamedPairs = findRenamedTests(newFailureList, newlyPassingList);
+
+  const filteredNewFailureList = newFailureList.filter(
+    (item) =>
+      !renamedPairs.some(
+        (check) => buildFingerprint(check.newTest) === buildFingerprint(item),
+      ),
+  );
+
+  const filteredNewlyPassingList = newlyPassingList.filter(
+    (item) =>
+      !renamedPairs.some(
+        (check) => buildFingerprint(check.oldTest) === buildFingerprint(item),
+      ),
+  );
+
+  return {
+    newFailureList: filteredNewFailureList,
+    changedReasonList,
+    newlyPassingList: filteredNewlyPassingList,
+  };
 }

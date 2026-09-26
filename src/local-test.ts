@@ -23,7 +23,7 @@ async function main() {
       status: "failed",
       errorMessage: "Element not found: #submit",
     },
-    { filePath: "cart.spec.ts", title: "payment", status: "failed" },
+    { filePath: "cart.spec.ts", title: "checkout flow", status: "failed" },
   ]);
 
   // Purpose — load both runs back from Postgres, exactly what the compare command will eventually do
