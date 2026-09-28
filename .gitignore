@@ -4,5 +4,8 @@ node_modules
 
 /generated/prisma
 
+# Playwright's own auto-generated demo-run artifacts
+/test-results
+
 # Internal session notes - not part of the public project
 PROGRESS.md
